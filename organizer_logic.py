@@ -35,12 +35,12 @@ class DownloadOrganizer:
     def __init__(self):
         username = os.getlogin()
         self.downloads_dir = Path(f"/home/{username}/Descargas")
-        # Carpeta externa para archivos no clasificados (fuera de Descargas)
-        self.unclassified_dir = Path(f"/home/{username}/Otros_Descargas") 
+        # Carpeta  para archivos no clasificados 
+        self.unclassified_dir = self.downloads_dir / "No_Clasificados"
         self.results = {'moved': 0, 'skipped': 0, 'errors': 0}
         print(f"Iniciando organizador para: {self.downloads_dir}")
 
-    # --- NUEVA FUNCIÓN PARA GESTIONAR DUPLICADOS ---
+    # --- FUNCIÓN PARA GESTIONAR DUPLICADOS ---
     def _generate_unique_name(self, destination_path: Path, item_name: str) -> Path:
         """
         Genera un nombre de archivo único añadiendo un contador (ej. archivo(1).ext) 
@@ -73,7 +73,7 @@ class DownloadOrganizer:
 
     def _get_destination_path(self, item: Path) -> Path:
         """
-        Determina la ruta completa de destino. Si no está mapeada, usa la carpeta externa 'Otros_Descargas'.
+        Determina la ruta completa de destino. Si no está mapeada, usa la carpeta 'Otros_Descargas'.
         """
         ext = item.suffix.lstrip('.').lower()
         destino_relativo = self.EXT_TO_DIR.get(ext)
