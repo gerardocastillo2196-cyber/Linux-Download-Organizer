@@ -150,8 +150,7 @@ class DownloadOrganizer:
             print(f"Error: La carpeta {self.downloads_dir} no existe.")
             return
 
-        # Crea la carpeta externa para no clasificados
-        self.unclassified_dir.mkdir(parents=True, exist_ok=True) 
+        
 
         # Lógica para procesar un solo archivo (ideal con monitor.sh)
         if specific_file:
