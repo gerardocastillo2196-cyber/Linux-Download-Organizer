@@ -21,9 +21,10 @@ class DownloadOrganizer:
         # Audio
         'mp3': 'Audio', 'wav': 'Audio', 'flac': 'Audio', 'm4a': 'Audio',
 
-        # Documentos - Oficina
-        'pdf': 'Documentos/Oficina', 'docx': 'Documentos/Oficina', 'xlsx': 'Documentos/Oficina',
-        'pptx': 'Documentos/Oficina', 'doc': 'Documentos/Oficina', 'xls': 'Documentos/Oficina',
+        # Documentos - Oficina  
+        'pdf': 'Oficina', 'docx': 'Oficina', 'xlsx': 'Oficina',
+        'pptx': 'Oficina', 'doc': 'Oficina', 'xls': 'Oficina',
+        'txt': 'Oficina', 'csv': 'Oficina', 'log': 'Oficina',
 
         # Documentos - Texto Plano
         'txt': 'Documentos/Texto_Plano', 'csv': 'Documentos/Texto_Plano', 'log': 'Documentos/Texto_Plano',
@@ -36,7 +37,7 @@ class DownloadOrganizer:
         username = os.getlogin()
         self.downloads_dir = Path(f"/home/{username}/Descargas")
         # Carpeta  para archivos no clasificados 
-        self.unclassified_dir = self.downloads_dir / "No_Clasificados"
+        self.unclassified_dir = self.downloads_dir / "No Clasificados"
         self.results = {'moved': 0, 'skipped': 0, 'errors': 0}
         print(f"Iniciando organizador para: {self.downloads_dir}")
 
@@ -115,13 +116,27 @@ class DownloadOrganizer:
 
     def _get_destination_path(self, item: Path) -> Path:
         """
-        Determina la ruta completa de destino. Si no está mapeada, usa la carpeta 'Otros_Descargas'.
+        Determina la ruta completa de destino, incluyendo la creación de
+        subcarpetas dinámicas para la categoría 'Oficina'.
         """
         ext = item.suffix.lstrip('.').lower()
-        destino_relativo = self.EXT_TO_DIR.get(ext)
+        destino_base = self.EXT_TO_DIR.get(ext) # Esto puede ser 'Oficina', 'Imágenes', etc.
         
-        if destino_relativo:
-            # Archivo clasificado: ruta dentro de Descargas
+        if destino_base:
+            
+            # --- NUEVA LÓGICA PARA DOCUMENTOS ---
+            if destino_base == 'Oficina':
+                # Construye la subcarpeta dinámica: 'Oficina/Archivos PDF', 'Oficina/Archivos DOCX'
+                # La extensión se convierte a mayúsculas como pediste (ej. 'PDF', 'DOCX')
+                folder_name = f"Archivos {ext.upper()}" 
+                destino_relativo = Path(destino_base) / folder_name 
+            
+            # --- LÓGICA EXISTENTE PARA OTRAS CATEGORÍAS ---
+            else:
+                # Si no es documento, usa la ruta relativa normal
+                destino_relativo = Path(destino_base)
+                
+            # Archivo clasificado: ruta completa dentro de Descargas
             return self.downloads_dir / destino_relativo
         else:
             # Archivo NO clasificado: ruta a la carpeta externa
