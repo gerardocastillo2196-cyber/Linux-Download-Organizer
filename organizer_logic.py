@@ -40,6 +40,48 @@ class DownloadOrganizer:
         self.results = {'moved': 0, 'skipped': 0, 'errors': 0}
         print(f"Iniciando organizador para: {self.downloads_dir}")
 
+
+     # --- NUEVO MÉTODO PARA CONTAR ---
+    def count_screenshots(self, screenshot_dir_path: str = "/home/gerardo/Imágenes/Capturas de pantalla") -> int:
+        """
+        Cuenta el número de archivos dentro de la carpeta de capturas de pantalla.
+        """
+        screenshots_dir = Path(screenshot_dir_path)
+        
+        if not screenshots_dir.is_dir():
+            return 0
+
+        # Contar solo archivos (ignorando subdirectorios)
+        return sum(1 for item in screenshots_dir.iterdir() if item.is_file())   
+
+
+    # --- MÉTODO DE ELIMINACIÓN (MODIFICADO) ---
+    def delete_screenshots(self, screenshot_dir_path: str = "/home/gerardo/Imágenes/Capturas de pantalla"):
+        """
+        Elimina de forma permanente todos los archivos dentro de la carpeta
+        especificada para capturas de pantalla. (Asume que la confirmación ya fue hecha).
+        """
+        screenshots_dir = Path(screenshot_dir_path)
+        
+        if not screenshots_dir.is_dir():
+            print(f"Advertencia: El directorio de capturas de pantalla no existe en: {screenshots_dir}")
+            return
+
+        deleted_count = 0
+        print(f"\n--- Iniciando eliminación de archivos en {screenshots_dir} ---")
+        
+        try:
+            # Iterar sobre todos los elementos dentro de la carpeta
+            for item in screenshots_dir.iterdir():
+                if item.is_file():
+                    item.unlink()  # Elimina el archivo
+                    deleted_count += 1
+            
+            print(f"\n✅ Eliminación completada. Total de archivos borrados: {deleted_count}")
+        
+        except Exception as e:
+            print(f"Error al intentar eliminar archivos: {e}")
+
     # --- FUNCIÓN PARA GESTIONAR DUPLICADOS ---
     def _generate_unique_name(self, destination_path: Path, item_name: str) -> Path:
         """
