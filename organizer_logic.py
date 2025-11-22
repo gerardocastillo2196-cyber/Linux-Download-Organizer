@@ -36,7 +36,9 @@ class DownloadOrganizer:
     def __init__(self):
         username = os.getlogin()
         self.downloads_dir = Path(f"/home/{username}/Descargas")
-        # Carpeta  para archivos no clasificados 
+        # --- MEJORA: Ruta de capturas dinámica ---
+        self.screenshots_dir = Path(f"/home/{username}/Imágenes/Capturas de pantalla") 
+        # Carpeta para archivos no clasificados 
         self.unclassified_dir = self.downloads_dir / "No Clasificados"
         self.results = {'moved': 0, 'skipped': 0, 'errors': 0}
         print(f"Iniciando organizador para: {self.downloads_dir}")
