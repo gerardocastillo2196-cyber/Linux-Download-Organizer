@@ -10,7 +10,6 @@ class DownloadOrganizer:
     """
 
     # Diccionario de mapeo de extensiones a nombres de carpeta
-    # ... (EXT_TO_DIR sin cambios) ...
     EXT_TO_DIR = {
         # Imágenes
         'jpg': 'Imágenes', 'jpeg': 'Imágenes', 'png': 'Imágenes', 'gif': 'Imágenes', 'svg': 'Imágenes', 'webp': 'Imágenes',
@@ -21,12 +20,11 @@ class DownloadOrganizer:
         # Audio
         'mp3': 'Audio', 'wav': 'Audio', 'flac': 'Audio', 'm4a': 'Audio',
 
-        # Documentos - Oficina  
+        # Documentos - Oficina (Corregido: 'csv' eliminado para evitar duplicados)
         'pdf': 'Oficina', 'docx': 'Oficina', 'xlsx': 'Oficina',
         'pptx': 'Oficina', 'doc': 'Oficina', 'xls': 'Oficina',
-        'txt': 'Oficina', 'csv': 'Oficina', 'log': 'Oficina',
-
-        # Documentos - Texto Plano
+        
+        # Documentos - Texto Plano (Esto incluye 'csv', 'txt' y 'log')
         'txt': 'Documentos/Texto_Plano', 'csv': 'Documentos/Texto_Plano', 'log': 'Documentos/Texto_Plano',
 
         # Comprimidos e Instaladores
@@ -44,12 +42,13 @@ class DownloadOrganizer:
         print(f"Iniciando organizador para: {self.downloads_dir}")
 
 
-     # --- NUEVO MÉTODO PARA CONTAR ---
-    def count_screenshots(self, screenshot_dir_path: str = "/home/gerardo/Imágenes/Capturas de pantalla") -> int:
+     # --- NUEVO MÉTODO PARA CONTAR (CORREGIDO) ---
+    def count_screenshots(self) -> int:
         """
-        Cuenta el número de archivos dentro de la carpeta de capturas de pantalla.
+        Cuenta el número de archivos dentro de la carpeta de capturas de pantalla, usando la ruta dinámica.
         """
-        screenshots_dir = Path(screenshot_dir_path)
+        # Ahora usa self.screenshots_dir, eliminando el argumento hardcodeado
+        screenshots_dir = self.screenshots_dir 
         
         if not screenshots_dir.is_dir():
             return 0
@@ -58,13 +57,14 @@ class DownloadOrganizer:
         return sum(1 for item in screenshots_dir.iterdir() if item.is_file())   
 
 
-    # --- MÉTODO DE ELIMINACIÓN (MODIFICADO) ---
-    def delete_screenshots(self, screenshot_dir_path: str = "/home/gerardo/Imágenes/Capturas de pantalla"):
+    # --- MÉTODO DE ELIMINACIÓN (CORREGIDO) ---
+    def delete_screenshots(self):
         """
         Elimina de forma permanente todos los archivos dentro de la carpeta
-        especificada para capturas de pantalla. (Asume que la confirmación ya fue hecha).
+        especificada para capturas de pantalla, usando la ruta dinámica.
         """
-        screenshots_dir = Path(screenshot_dir_path)
+        # Ahora usa self.screenshots_dir, eliminando el argumento hardcodeado
+        screenshots_dir = self.screenshots_dir
         
         if not screenshots_dir.is_dir():
             print(f"Advertencia: El directorio de capturas de pantalla no existe en: {screenshots_dir}")
@@ -85,7 +85,7 @@ class DownloadOrganizer:
         except Exception as e:
             print(f"Error al intentar eliminar archivos: {e}")
 
-    # --- FUNCIÓN PARA GESTIONAR DUPLICADOS ---
+    # --- FUNCIÓN PARA GESTIONAR DUPLICADOS (Sin cambios) ---
     def _generate_unique_name(self, destination_path: Path, item_name: str) -> Path:
         """
         Genera un nombre de archivo único añadiendo un contador (ej. archivo(1).ext) 

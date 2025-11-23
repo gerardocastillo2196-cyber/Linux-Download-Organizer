@@ -1,6 +1,7 @@
 # main.py 
 from organizer_logic import DownloadOrganizer
-import sys 
+import sys
+import subprocess 
 
 if __name__ == "__main__":
     file_to_organize = sys.argv[1] if len(sys.argv) > 1 else None
@@ -23,7 +24,13 @@ if __name__ == "__main__":
         
         print(f"\n--- Tarea 1/2: Limpieza de Capturas ({count} encontradas) ---")
         
-        if count > 0:
+        if count >= 1:
+            # 1.1. --- Notificación de escritorio ---
+            # Comando para mostrar una notificación de alto nivel de urgencia
+            notification_title = "🚨 Limpieza Urgente de Capturas 🚨"
+            notification_body = f"Se han acumulado {count} capturas de pantalla. Ejecute el script para eliminarlas."
+            subprocess.run(["notify-send", "-u", "critical", notification_title, notification_body])
+
             # 2. Informar y PEDIR CONFIRMACIÓN
             print(f"Se encontraron {count} capturas de pantalla en la ruta.")
             print(f"¿Deseas eliminar estas {count} capturas de pantalla de forma permanente? (s/n)")
